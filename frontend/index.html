@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Blog</title>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs/loader.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -77,6 +77,11 @@
             display: flex;
             align-items: center;
         }
+        #editor {
+            height: 300px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -89,7 +94,7 @@
         <select id="category" required>
             <option value="">Select a category</option>
         </select>
-        <textarea id="body" placeholder="Write your post..."></textarea>
+        <div id="editor"></div>
         <button type="submit">Publish</button>
     </form>
     <div id="posts"></div>

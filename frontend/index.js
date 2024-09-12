@@ -6,12 +6,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const postsContainer = document.getElementById('posts');
   const categorySelect = document.getElementById('category');
   const categoriesContainer = document.getElementById('categories');
+  let editor;
 
-  // Initialize TinyMCE
-  tinymce.init({
-    selector: '#body',
-    plugins: 'link image code',
-    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+  // Initialize Monaco Editor
+  require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs' }});
+  require(['vs/editor/editor.main'], function() {
+    editor = monaco.editor.create(document.getElementById('editor'), {
+      value: '',
+      language: 'markdown',
+      theme: 'vs-light',
+      minimap: { enabled: false }
+    });
   });
 
   // Function to get category icon
@@ -50,12 +55,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
-    const body = tinymce.get('body').getContent();
+    const body = editor.getValue();
     const category = categorySelect.value;
 
     await backend.addPost(title, body, author, category);
     postForm.reset();
-    tinymce.get('body').setContent('');
+    editor.setValue('');
     postForm.style.display = 'none';
     await displayPosts();
   });
