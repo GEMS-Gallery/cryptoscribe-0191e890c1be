@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const newPostBtn = document.getElementById('newPostBtn');
   const postsContainer = document.getElementById('posts');
   const categorySelect = document.getElementById('category');
+  const categoriesContainer = document.getElementById('categories');
 
   // Initialize TinyMCE
   tinymce.init({
@@ -13,13 +14,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
   });
 
-  // Populate category select
+  // Function to get category icon
+  function getCategoryIcon(category) {
+    const icons = {
+      'Bitcoin': 'fab fa-bitcoin',
+      'Ethereum': 'fab fa-ethereum',
+      'DeFi': 'fas fa-chart-line',
+      'NFTs': 'fas fa-image',
+      'Blockchain': 'fas fa-link'
+    };
+    return icons[category] || 'fas fa-question';
+  }
+
+  // Populate category select and display categories
   const categories = await backend.getCategories();
   categories.forEach(category => {
     const option = document.createElement('option');
     option.value = category;
     option.textContent = category;
     categorySelect.appendChild(option);
+
+    const categoryTag = document.createElement('div');
+    categoryTag.className = 'category-tag';
+    categoryTag.innerHTML = `<i class="${getCategoryIcon(category)} category-icon"></i>${category}`;
+    categoriesContainer.appendChild(categoryTag);
   });
 
   // Toggle new post form
@@ -41,18 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     postForm.style.display = 'none';
     await displayPosts();
   });
-
-  // Function to get category icon
-  function getCategoryIcon(category) {
-    const icons = {
-      'Bitcoin': 'fab fa-bitcoin',
-      'Ethereum': 'fab fa-ethereum',
-      'DeFi': 'fas fa-chart-line',
-      'NFTs': 'fas fa-image',
-      'Blockchain': 'fas fa-link'
-    };
-    return icons[category] || 'fas fa-question';
-  }
 
   // Function to display posts
   async function displayPosts() {
