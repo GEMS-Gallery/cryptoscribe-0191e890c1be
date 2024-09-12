@@ -13,18 +13,23 @@ actor {
     body: Text;
     author: Text;
     timestamp: Int;
+    category: Text;
   };
 
   // Use a stable variable to store posts
   stable var posts : [Post] = [];
 
+  // Define available categories
+  let categories = ["Bitcoin", "Ethereum", "DeFi", "NFTs", "Blockchain"];
+
   // Function to add a new post
-  public func addPost(title: Text, body: Text, author: Text) : async () {
+  public func addPost(title: Text, body: Text, author: Text, category: Text) : async () {
     let newPost : Post = {
       title = title;
       body = body;
       author = author;
       timestamp = Time.now();
+      category = category;
     };
     posts := Array.append<Post>([newPost], posts);
   };
@@ -36,5 +41,10 @@ actor {
       else if (a.timestamp < b.timestamp) { #greater }
       else { #equal }
     })
+  };
+
+  // Function to get all available categories
+  public query func getCategories() : async [Text] {
+    categories
   };
 }

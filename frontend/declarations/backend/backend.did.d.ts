@@ -7,9 +7,11 @@ export interface Post {
   'body' : string,
   'author' : string,
   'timestamp' : bigint,
+  'category' : string,
 }
 export interface _SERVICE {
-  'addPost' : ActorMethod<[string, string, string], undefined>,
+  'addPost' : ActorMethod<[string, string, string, string], undefined>,
+  'getCategories' : ActorMethod<[], Array<string>>,
   'getPosts' : ActorMethod<[], Array<Post>>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;

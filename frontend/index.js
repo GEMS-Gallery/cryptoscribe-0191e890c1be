@@ -4,12 +4,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const postForm = document.getElementById('postForm');
   const newPostBtn = document.getElementById('newPostBtn');
   const postsContainer = document.getElementById('posts');
+  const categorySelect = document.getElementById('category');
 
   // Initialize TinyMCE
   tinymce.init({
     selector: '#body',
     plugins: 'link image code',
     toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+  });
+
+  // Populate category select
+  const categories = await backend.getCategories();
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    categorySelect.appendChild(option);
   });
 
   // Toggle new post form
@@ -23,21 +33,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
     const body = tinymce.get('body').getContent();
+    const category = categorySelect.value;
 
-    await backend.addPost(title, body, author);
+    await backend.addPost(title, body, author, category);
     postForm.reset();
     tinymce.get('body').setContent('');
     postForm.style.display = 'none';
     await displayPosts();
   });
 
+  // Function to get category icon
+  function getCategoryIcon(category) {
+    const icons = {
+      'Bitcoin': 'fab fa-bitcoin',
+      'Ethereum': 'fab fa-ethereum',
+      'DeFi': 'fas fa-chart-line',
+      'NFTs': 'fas fa-image',
+      'Blockchain': 'fas fa-link'
+    };
+    return icons[category] || 'fas fa-question';
+  }
+
   // Function to display posts
   async function displayPosts() {
     const posts = await backend.getPosts();
     postsContainer.innerHTML = posts.map(post => `
       <div class="post">
-        <h2>${post.title}</h2>
-        <div class="post-meta">By ${post.author} on ${new Date(Number(post.timestamp) / 1000000).toLocaleString()}</div>
+        <h2>
+          <i class="${getCategoryIcon(post.category)} category-icon"></i>
+          ${post.title}
+        </h2>
+        <div class="post-meta">
+          By ${post.author} on ${new Date(Number(post.timestamp) / 1000000).toLocaleString()} | Category: ${post.category}
+        </div>
         <div class="post-body">${post.body}</div>
       </div>
     `).join('');
