@@ -11,11 +11,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize Monaco Editor
   require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs' }});
   require(['vs/editor/editor.main'], function() {
-    editor = monaco.editor.create(document.getElementById('editor'), {
-      value: '',
+    editor = monaco.editor.create(document.getElementById('editor-container'), {
+      value: '# Write your post content here\n\nUse Markdown syntax for formatting.',
       language: 'markdown',
       theme: 'vs-light',
-      minimap: { enabled: false }
+      minimap: { enabled: false },
+      lineNumbers: 'off',
+      wordWrap: 'on',
+      wrappingIndent: 'indent',
+      lineDecorationsWidth: 0,
+      lineNumbersMinChars: 0,
+      glyphMargin: false,
+      folding: false,
+      renderLineHighlight: 'none',
+      scrollbar: {
+        vertical: 'hidden',
+        horizontal: 'hidden'
+      }
     });
   });
 
@@ -48,6 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Toggle new post form
   newPostBtn.addEventListener('click', () => {
     postForm.style.display = postForm.style.display === 'none' ? 'block' : 'none';
+    if (postForm.style.display === 'block') {
+      editor.layout();
+    }
   });
 
   // Handle form submission
@@ -60,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await backend.addPost(title, body, author, category);
     postForm.reset();
-    editor.setValue('');
+    editor.setValue('# Write your post content here\n\nUse Markdown syntax for formatting.');
     postForm.style.display = 'none';
     await displayPosts();
   });
